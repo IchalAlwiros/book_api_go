@@ -2,11 +2,15 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"goapi.railway.app/api/database"
+	"goapi.railway.app/api/model"
 )
 
 const version = "0.0.1"
@@ -21,6 +25,18 @@ type application struct {
 }
 
 func main() {
+
+	// CONNECT DB
+	if err := database.ConnectioDB(); err != nil {
+		log.Fatal("Cannot connect to DB", err.Error())
+	}
+
+
+
+	// MIGRATION MODEL
+	if err := database.DB.AutoMigrate(model.Book{}); err != nil {
+		log.Fatal("Cannot migrate to DB", err)
+	}
 
 	var cfg config
 
